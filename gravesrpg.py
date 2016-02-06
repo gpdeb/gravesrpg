@@ -43,13 +43,58 @@ class Tile:
 
         
 
+class Rect:
+    #A rectangular room
+    def __init__(self, x, y, w, h):
+        self.x1 = x
+        self.y1 = y
+        self.x2 = x + w
+        self.y2 = y + h
+        
+        
+        
 def make_map():
     global map
     
-    #Fill map with empty floor tiles
-    map = [[ Tile(False)
+    #Fill map with blocked tiles
+    map = [[ Tile(True)
         for y in range(MAP_HEIGHT) ]
             for x in range(MAP_WIDTH) ]
+    
+    #Create a couple rooms
+    room1 = Rect(20, 15, 10, 15)
+    room2 = Rect(50, 15, 10, 15)
+    create_room(room1)
+    create_room(room2)
+    
+    #Create a hallway connecting the rooms
+    create_h_tunnel(25, 55, 23)
+        
+        
+        
+def create_room(room):
+    global map
+    #Make each tile in the rectangle passable
+    for x in range(room.x1 + 1, room.x2):
+        for y in range(room.y1 + 1, room.y2):
+            map[x][y].blocked = False
+            map[x][y].block_sight = False
+            
+            
+            
+def create_h_tunnel(x1, x2, y):
+    global map
+    for x in range(min(x1, x2), max(x1, x2) + 1):
+        map[x][y].blocked = False
+        map[x][y].block_sight = False
+
+
+
+def create_v_tunnel(y1, y2, x):
+    global map
+    for y in range(min(y1, y2), max(y1, y2) + 1):
+        map[x][y].blocked = False
+        map[x][y].block_sight = False
         
         
         
@@ -106,8 +151,8 @@ con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 make_map()
 
-player = Object(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, '@', libtcod.white)
-npc = Object(SCREEN_WIDTH / 2 - 5, SCREEN_HEIGHT / 2, '@', libtcod.yellow)
+player = Object(25, 23, '@', libtcod.white)
+npc = Object(23, 23, '@', libtcod.yellow)
 
 objects = [npc, player]
 
