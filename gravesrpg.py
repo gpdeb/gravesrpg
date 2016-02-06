@@ -17,8 +17,9 @@ class Object:
         self.color = color
     
     def move(self, dx, dy):
-        self.x += dx
-        self.y += dy
+        if not map[self.x + dx][self.y + dy].blocked:
+            self.x += dx
+            self.y += dy
     
     def draw(self):
         #Set the object's color and draw the character at the object's position
@@ -49,6 +50,24 @@ def make_map():
     map = [[ Tile(False)
         for y in range(MAP_HEIGHT) ]
             for x in range(MAP_WIDTH) ]
+        
+        
+        
+def render_all():
+    #Draw all objects
+    for object in objects:
+        object.draw()
+    
+    #Draw the map
+    for y in range(MAP_HEIGHT):
+        for x in range(MAP_WIDTH):
+            wall = map[x][y].block_sight
+            if wall:
+                libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
+            else:
+                libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
+    
+    libtcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
         
         
         
@@ -85,6 +104,8 @@ libtcod.console_set_custom_font('dejavu10x10_gs_tc.png', libtcod.FONT_TYPE_GREYS
 libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'GravesRPG', False)
 con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
+make_map()
+
 player = Object(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, '@', libtcod.white)
 npc = Object(SCREEN_WIDTH / 2 - 5, SCREEN_HEIGHT / 2, '@', libtcod.yellow)
 
@@ -92,11 +113,8 @@ objects = [npc, player]
 
 while not libtcod.console_is_window_closed():
 
-    #Draw all objects
-    for object in objects:
-        object.draw()
+    render_all()
     
-    libtcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
     libtcod.console_flush()
     
     #Erase all objects before they move
