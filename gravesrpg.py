@@ -2,6 +2,11 @@ import libtcodpy as libtcod
 
 SCREEN_WIDTH = 80
 SCREEN_HEIGHT = 50
+MAP_WIDTH = 80
+MAP_HEIGHT = 45
+
+color_dark_wall = libtcod.Color(0, 0, 100)
+color_dark_ground = libtcod.Color(50, 50, 150)
 
 #A generic game object. A person, an item, an enemy, etc
 class Object:
@@ -24,6 +29,27 @@ class Object:
         #Erase the character that represents the object from the screen
         libtcod.console_put_char(con, self.x, self.y, ' ', libtcod.BKGND_NONE)
 
+
+
+class Tile:
+    #A map tile
+    def __init__(self, blocked, block_sight = None):
+        self.blocked = blocked
+        
+        #A blocked tile also blocks sight by default
+        if block_sight is None: block_sight = blocked
+        self.block_sight = block_sight
+
+        
+
+def make_map():
+    global map
+    
+    #Fill map with empty floor tiles
+    map = [[ Tile(False)
+        for y in range(MAP_HEIGHT) ]
+            for x in range(MAP_WIDTH) ]
+        
         
         
 def handle_keys():
