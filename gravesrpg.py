@@ -1,5 +1,4 @@
 import libtcodpy as libtcod
-from object import Object
 
 SCREEN_WIDTH = 80
 SCREEN_HEIGHT = 50
